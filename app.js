@@ -18,12 +18,10 @@ const CONFIG = {
   vibration: true,
 
   categoriasSucio: [
-    { id: "blanca",   label: "Blanca",   emoji: "", color: "#e0e7ff" },
-    { id: "color",    label: "Color",    emoji: "", color: "#fca5a5" },
-    { id: "cocina",   label: "Cocina",   emoji: "", color: "#fde68a" },
-    { id: "piscina",  label: "Piscina",  emoji: "", color: "#7dd3fc" },
-    { id: "toallas",  label: "Toallas",  emoji: "", color: "#86efac" },
-    { id: "varios",   label: "Varios",   emoji: "", color: "#d8b4fe" },
+    { id: "sabanas",     label: "Sábanas",     emoji: "", color: "#e0e7ff" },
+    { id: "servilletas", label: "Servilletas", emoji: "", color: "#fca5a5" },
+    { id: "caminos",     label: "Caminos",     emoji: "", color: "#fde68a" },
+    { id: "manteles",    label: "Manteles",    emoji: "", color: "#7dd3fc" },
   ],
 
   productosLimpio: [
