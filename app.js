@@ -416,10 +416,10 @@ function createStepper({ id, label, value = 0, min = 0, max = 300, step = 0.2, u
   plusBtn.setAttribute("aria-label", "Aumentar");
   plusBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`;
 
-  function roundToStep(v) {
-    const decimals = String(step).includes(".") ? String(step).split(".")[1].length : 0;
-    return Number(v.toFixed(decimals));
-  }
+function roundToStep(v) {
+  const inv = 1 / step;
+  return Math.round(v * inv) / inv;
+}
 
   function normalize(v) {
     let n = typeof v === "number" ? v : parseFloat(String(v).replace(",", "."));
@@ -429,7 +429,7 @@ function createStepper({ id, label, value = 0, min = 0, max = 300, step = 0.2, u
   }
 
   function render() {
-    input.value = Number.isInteger(current) ? String(current) : String(current);
+input.value = current.toFixed(1);
     valueWrap.setAttribute("aria-valuenow", current);
     unitSpan.style.display = unit ? "inline-block" : "none";
   }
