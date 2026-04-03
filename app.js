@@ -391,26 +391,51 @@ function createStepper({ id, label, value = 0, min = 0, max = 9999, step = 1, un
   minusBtn.setAttribute("aria-label", "Disminuir");
   minusBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>`;
 
-  const valueDisplay = document.createElement("div");
-  valueDisplay.className = "stepper__value";
-  valueDisplay.setAttribute("role", "spinbutton");
-  valueDisplay.setAttribute("aria-valuenow", current);
-  valueDisplay.setAttribute("aria-valuemin", min);
-  valueDisplay.setAttribute("aria-valuemax", max);
+  const valueWrap = document.createElement("div");
+  valueWrap.className = "stepper__value";
+  valueWrap.setAttribute("role", "spinbutton");
+  valueWrap.setAttribute("aria-valuemin", min);
+  valueWrap.setAttribute("aria-valuemax", max);
+
+  const input = document.createElement("input");
+  input.type = "number";
+  input.inputMode = step % 1 === 0 ? "numeric" : "decimal";
+  input.step = String(step);
+  input.min = String(min);
+  input.max = String(max);
+  input.value = String(value);
+  input.className = "stepper__input";
+  input.setAttribute("aria-label", label || "Valor");
+
+  const unitSpan = document.createElement("span");
+  unitSpan.className = "stepper__unit";
+  unitSpan.textContent = unit || "";
 
   const plusBtn = document.createElement("button");
   plusBtn.className = "stepper__btn stepper__btn--plus";
   plusBtn.setAttribute("aria-label", "Aumentar");
   plusBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`;
 
+  function roundToStep(v) {
+    const decimals = String(step).includes(".") ? String(step).split(".")[1].length : 0;
+    return Number(v.toFixed(decimals));
+  }
+
+  function normalize(v) {
+    let n = typeof v === "number" ? v : parseFloat(String(v).replace(",", "."));
+    if (!Number.isFinite(n)) n = min;
+    n = Math.max(min, Math.min(max, n));
+    return roundToStep(n);
+  }
+
   function render() {
-    const valStr = Number.isInteger(current) ? current.toString() : current.toFixed(1);
-    valueDisplay.innerHTML = `${valStr}${unit ? `<span class="stepper__unit">${unit}</span>` : ""}`;
-    valueDisplay.setAttribute("aria-valuenow", current);
+    input.value = Number.isInteger(current) ? String(current) : String(current);
+    valueWrap.setAttribute("aria-valuenow", current);
+    unitSpan.style.display = unit ? "inline-block" : "none";
   }
 
   function setValue(v, silent = false) {
-    current = Math.max(min, Math.min(max, v));
+    current = normalize(v);
     render();
     if (!silent && onchange) onchange(current);
   }
@@ -418,6 +443,24 @@ function createStepper({ id, label, value = 0, min = 0, max = 9999, step = 1, un
   function getValue() {
     return current;
   }
+
+  input.addEventListener("focus", () => {
+    input.select();
+  });
+
+  input.addEventListener("input", () => {
+    const raw = input.value.trim();
+    if (raw === "" || raw === "-" || raw === "." || raw === ",") return;
+    const parsed = parseFloat(raw.replace(",", "."));
+    if (!Number.isFinite(parsed)) return;
+    current = parsed;
+    valueWrap.setAttribute("aria-valuenow", current);
+    if (onchange) onchange(normalize(parsed));
+  });
+
+  input.addEventListener("blur", () => {
+    setValue(input.value);
+  });
 
   let pressTimer = null;
   let pressInterval = null;
@@ -468,8 +511,11 @@ function createStepper({ id, label, value = 0, min = 0, max = 9999, step = 1, un
     });
   });
 
+  valueWrap.appendChild(input);
+  if (unit) valueWrap.appendChild(unitSpan);
+
   stepper.appendChild(minusBtn);
-  stepper.appendChild(valueDisplay);
+  stepper.appendChild(valueWrap);
   stepper.appendChild(plusBtn);
   wrap.appendChild(stepper);
 
@@ -477,7 +523,6 @@ function createStepper({ id, label, value = 0, min = 0, max = 9999, step = 1, un
 
   return { el: wrap, getValue, setValue };
 }
-
 // ============================================================
 // MODULE: CHIP SELECTOR — Category/product picker
 // ============================================================
