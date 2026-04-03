@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="LaundryPro" />
+  <meta name="description" content="Gestión profesional de lavandería hotelera" />
+
+  <title>LaundryPro</title>
+
+  <!-- PWA manifest -->
+
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Apple touch icons -->
+
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- Stylesheet -->
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Preconnect for fonts -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ============================================
+       SPLASH SCREEN
+  ============================================ -->
+
+  <div id="splash-screen" class="splash" role="main" aria-label="Pantalla de inicio">
+    <div class="splash__bg-grid"></div>
+    <div class="splash__content">
+      <div class="splash__logo-wrap">
+        <div class="splash__icon" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="64" height="64" rx="16" fill="url(#grad1)"/>
+            <circle cx="32" cy="30" r="14" stroke="white" stroke-width="2.5" fill="none"/>
+            <circle cx="32" cy="30" r="7" stroke="white" stroke-width="2" fill="none" opacity="0.6"/>
+            <path d="M18 44 Q32 50 46 44" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <defs>
+              <linearGradient id="grad1" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#3d8eff"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h1 class="splash__title">LaundryPro</h1>
+        <p class="splash__subtitle">Gestión Hotelera</p>
+      </div>
+
+```
+  <div class="splash__status-panel" role="status" aria-live="polite">
+    <div class="status-row">
+      <div class="status-indicator" id="splash-online-indicator">
+        <span class="status-dot" id="splash-status-dot"></span>
+        <span class="status-label" id="splash-status-label">Verificando...</span>
+      </div>
+    </div>
+    <div class="status-row" id="splash-queue-row" style="display:none">
+      <div class="queue-badge">
+        <span id="splash-queue-count">0</span>
+        <span>registros en cola</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="splash__date" id="splash-date"></div>
+
+  <button class="btn-primary btn--xl splash__start-btn" id="splash-start-btn" aria-label="Iniciar aplicación">
+    <span>Empezar</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+  </button>
+
+  <div class="splash__version" id="splash-version">v1.0.0</div>
+</div>
+```
+
+  </div>
+
+  <!-- ============================================
+       MAIN APP
+  ============================================ -->
+
+  <div id="app" class="app" style="display:none" role="main">
+
+```
+<!-- Top bar -->
+<header class="app-header" role="banner">
+  <div class="app-header__left">
+    <div class="app-header__logo" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+        <rect width="32" height="32" rx="8" fill="url(#h-grad)"/>
+        <circle cx="16" cy="15" r="7" stroke="white" stroke-width="1.5" fill="none"/>
+        <circle cx="16" cy="15" r="3.5" stroke="white" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <path d="M9 22 Q16 25 23 22" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <defs>
+          <linearGradient id="h-grad" x1="0" y1="0" x2="32" y2="32">
+            <stop offset="0%" stop-color="#3d8eff"/>
+            <stop offset="100%" stop-color="#a855f7"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <span class="app-header__title">LaundryPro</span>
+  </div>
+  <div class="app-header__right">
+    <div class="online-pill" id="header-online-pill" role="status" aria-live="polite">
+      <span class="online-pill__dot"></span>
+      <span class="online-pill__label" id="header-online-label">Online</span>
+    </div>
+    <div class="queue-pill" id="header-queue-pill" style="display:none" role="status">
+      <span id="header-queue-count">0</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+        <polyline points="17 6 23 6 23 12"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- Tab content area -->
+<main class="app-main" id="app-main" role="region" aria-label="Contenido principal">
+
+  <!-- TAB: SUCIO -->
+  <section class="tab-panel" id="tab-sucio" role="tabpanel" aria-labelledby="nav-sucio">
+    <div class="section-summary" id="sucio-summary" role="region" aria-label="Resumen ropa sucia"></div>
+    <div class="form-card" id="sucio-form-card" role="form" aria-label="Añadir registro de ropa sucia"></div>
+    <div class="records-section">
+      <div class="records-header">
+        <h2 class="records-title">Registros</h2>
+        <button class="btn-ghost btn--sm" id="sucio-clear-btn" aria-label="Borrar todos los registros de ropa sucia">Borrar todo</button>
+      </div>
+      <div class="records-list" id="sucio-list" role="list" aria-label="Lista de registros de ropa sucia"></div>
+      <div class="records-empty" id="sucio-empty" aria-live="polite">
+        <span>Sin registros aún</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: LIMPIO -->
+  <section class="tab-panel" id="tab-limpio" role="tabpanel" aria-labelledby="nav-limpio" style="display:none">
+    <div class="section-summary" id="limpio-summary" role="region" aria-label="Resumen ropa limpia"></div>
+    <div class="form-card" id="limpio-form-card" role="form" aria-label="Añadir ticket de ropa limpia"></div>
+    <div class="records-section">
+      <div class="records-header">
+        <h2 class="records-title">Tickets</h2>
+        <button class="btn-ghost btn--sm" id="limpio-clear-btn" aria-label="Borrar todos los tickets">Borrar todo</button>
+      </div>
+      <div class="records-list" id="limpio-list" role="list" aria-label="Lista de tickets"></div>
+      <div class="records-empty" id="limpio-empty" aria-live="polite">
+        <span>Sin tickets aún</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: HOTEL -->
+  <section class="tab-panel" id="tab-hotel" role="tabpanel" aria-labelledby="nav-hotel" style="display:none">
+    <div class="section-summary" id="hotel-summary" role="region" aria-label="Resumen lavadoras hotel"></div>
+    <div class="hotel-machines" id="hotel-machines" role="region" aria-label="Control de lavadoras"></div>
+  </section>
+
+  <!-- TAB: AJUSTES -->
+  <section class="tab-panel" id="tab-ajustes" role="tabpanel" aria-labelledby="nav-ajustes" style="display:none">
+    <div class="settings-content" id="settings-content"></div>
+  </section>
+
+</main>
+
+<!-- Bottom navigation -->
+<nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
+  <button class="nav-item active" id="nav-sucio" data-tab="sucio" aria-selected="true" role="tab" aria-controls="tab-sucio">
+    <div class="nav-item__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 7h18M3 12h18M3 17h18"/>
+        <rect x="1" y="4" width="22" height="16" rx="2" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <span class="nav-item__label">Sucio</span>
+    <div class="nav-item__badge" id="nav-sucio-badge" style="display:none"></div>
+  </button>
+
+  <button class="nav-item" id="nav-limpio" data-tab="limpio" aria-selected="false" role="tab" aria-controls="tab-limpio">
+    <div class="nav-item__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 3C7 3 3 7 3 12s4 9 9 9 9-4 9-9-4-9-9-9z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+    </div>
+    <span class="nav-item__label">Limpio</span>
+    <div class="nav-item__badge" id="nav-limpio-badge" style="display:none"></div>
+  </button>
+
+  <button class="nav-item" id="nav-hotel" data-tab="hotel" aria-selected="false" role="tab" aria-controls="tab-hotel">
+    <div class="nav-item__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="7" width="20" height="14" rx="2"/>
+        <circle cx="12" cy="14" r="3"/>
+        <path d="M7 7V5a5 5 0 0110 0v2"/>
+      </svg>
+    </div>
+    <span class="nav-item__label">Hotel</span>
+  </button>
+
+  <button class="nav-item" id="nav-ajustes" data-tab="ajustes" aria-selected="false" role="tab" aria-controls="tab-ajustes">
+    <div class="nav-item__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+      </svg>
+    </div>
+    <span class="nav-item__label">Ajustes</span>
+  </button>
+</nav>
+```
+
+  </div>
+
+  <!-- ============================================
+       MODAL OVERLAY (shared)
+  ============================================ -->
+
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-label="Diálogo" style="display:none">
+    <div class="modal-sheet" id="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       TOAST NOTIFICATIONS
+  ============================================ -->
+
+  <div class="toast-container" id="toast-container" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- ============================================
+       CONFIRM DIALOG
+  ============================================ -->
+
+  <div class="confirm-overlay" id="confirm-overlay" style="display:none" role="dialog" aria-modal="true">
+    <div class="confirm-dialog">
+      <p class="confirm-message" id="confirm-message"></p>
+      <div class="confirm-actions">
+        <button class="btn-ghost" id="confirm-cancel">Cancelar</button>
+        <button class="btn-danger" id="confirm-ok">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App script -->
+
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>
