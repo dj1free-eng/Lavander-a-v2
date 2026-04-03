@@ -369,7 +369,7 @@ const Modal = (() => {
 // ============================================================
 // MODULE: STEPPER COMPONENT — Reusable +/- stepper
 // ============================================================
-function createStepper({ id, label, value = 0, min = 0, max = 9999, step = 1, unit = "", onchange }) {
+function createStepper({ id, label, value = 0, min = 0, max = 300, step = 0.2, unit = "", onchange }) {
   const wrap = document.createElement("div");
   wrap.className = "stepper-wrap";
 
