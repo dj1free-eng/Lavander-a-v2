@@ -700,7 +700,7 @@ const SucioModule = (() => {
       value: tara + 10,
       min: 0,
       max: 500,
-      step: 0.5,
+      step: 0.2,
       unit: "kg",
       onchange: updateNeto,
     });
